@@ -1,6 +1,6 @@
 // Definição de tipos fundamentais
 
-use std::ops::{Add, AddAssign, Mul};
+use std::ops::{Add, AddAssign, Deref, Mul, SubAssign};
 use num::{One, Zero};
 use crate::traits::SupportTypes;
 
@@ -35,12 +35,6 @@ pub struct Header {
     pub extrinsics_root: String,
 }
 
-// Tipo para blocos
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Block {
-    pub header: Header,
-    pub extrinsics: Vec<Extrinsic>,
-}
 
 // Tipo para extrínsecos (transações/comandos)
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -55,6 +49,16 @@ pub struct MyRuntimeTypes;
 /// Tipo de resultado para operações de despacho. Retorna `Ok(())` em caso de sucesso,
 /// ou uma mensagem de erro estática em caso de falha.
 pub type DispatchResult = Result<(), &'static str>;
+
+
+impl Deref for AccountId {
+    type Target = String;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
 
 impl Add for Balance {
     type Output = Self;
@@ -102,6 +106,26 @@ impl One for BlockNumber {
     }
 }
 
+
+
+
+// Implementação da trait Mul para Balance
+impl Mul for Balance {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Balance(self.0 * rhs.0)
+    }
+}
+
+
+// Implementa a trait One para o tipo Balance
+impl One for Balance {
+    fn one() -> Self {
+        Balance(1)
+    }
+}
+
 impl Add for BlockNumber {
     type Output = Self;
     fn add(self, other: Self) -> Self {
@@ -117,5 +141,12 @@ impl Zero for BlockNumber {
 
     fn is_zero(&self) -> bool {
         self.0 == 0
+    }
+}
+
+// Implementa SubAssign para Balance
+impl SubAssign for Balance {
+    fn sub_assign(&mut self, other: Self) {
+        self.0 -= other.0;
     }
 }

@@ -5,6 +5,13 @@ pub struct Header<BlockNumber> {
     pub block_number: BlockNumber,
 }
 
+/// Um extrínseco representa uma transição de estado na blockchain.
+/// Inclui o chamador (`caller`) e a chamada específica (`call`).
+#[derive(Debug)]  // Adicione isso
+pub struct Extrinsic<Caller, Call> {
+    pub caller: Caller,
+    pub call: Call
+}
 
 /// Representação de um bloco na blockchain, contendo um cabeçalho e extrínsecos.
 #[derive(Debug)]  // Adicione isso
@@ -13,14 +20,6 @@ pub struct Block<Header, Extrinsic> {
     pub extrinsics: Vec<Extrinsic>,
 }
 
-
-/// Um extrínseco representa uma transição de estado na blockchain.
-/// Inclui o chamador (`caller`) e a chamada específica (`call`).
-#[derive(Debug)]  // Adicione isso
-pub struct Extrinsic<Caller, Call> {
-    pub caller: Caller,
-    pub call: Call
-}
 
 /// Tipo de resultado para operações de despacho. Retorna `Ok(())` em caso de sucesso,
 /// ou uma mensagem de erro estática em caso de falha.
